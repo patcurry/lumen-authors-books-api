@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Author extends Model
+class Book extends Model
 {
     /**
      * Get the author that this book belongs to
@@ -19,7 +19,7 @@ class Author extends Model
      *
      * @var array
      */
-    protected$ fillable = [
+    protected $fillable = [
         'book_title', 'author_id' 
     ];
 

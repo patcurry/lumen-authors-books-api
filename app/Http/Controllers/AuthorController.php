@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Author;
+
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -14,7 +15,9 @@ class AuthorController extends Controller
 
     public function showOneAuthor($author_id)
     {
-        return response()->json(Author::find($author_id));
+        $author = Author::find($author_id);
+        $author->books;
+        return response()->json($author, 200);
     }
 
     public function createAuthor(Request $request)
@@ -36,7 +39,7 @@ class AuthorController extends Controller
     {
         Author::findOrFail($author_id)->delete();
 
-        return response('Deleted Successfully', 200);
+        return response('Author Deleted Successfully', 200);
     }
 
 }
