@@ -17,14 +17,6 @@ class AuthorController extends Controller
 
     public function showOneAuthor($author_id)
     {
-        /*
-         * The $author->books; line adds a books array
-         * to the output. It is calling the "books"
-         * method on the Author.php model.
-         * If do not want to see a list of the books
-         * that the author has written in the output
-         * leave out the $author->books; line of code.
-         */
         $author = Author::find($author_id);
         $author->books;
 
