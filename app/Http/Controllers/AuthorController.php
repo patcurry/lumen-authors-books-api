@@ -6,6 +6,7 @@ use App\Author;
 use App\Book;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthorController extends Controller
 {
@@ -17,8 +18,11 @@ class AuthorController extends Controller
 
     public function showOneAuthor($author_id)
     {
-        $author = Author::find($author_id);
-        $author->books;
+        try {
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
 
         return response()->json($author, 200);
     }
@@ -33,7 +37,11 @@ class AuthorController extends Controller
 
     public function updateAuthor($author_id, Request $request)
     {
-        $author = Author::find($author_id);
+        try {
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
         $author->update($request->all());
 
         return response()->json($author, 200);
@@ -41,7 +49,11 @@ class AuthorController extends Controller
 
     public function deleteAuthor($author_id)
     {
-        Author::find($author_id)->delete();
+        try {
+            Author::findOrFail($author_id)->delete();
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
 
         return response('Author Deleted Successfully', 200);
     }
@@ -57,17 +69,28 @@ class AuthorController extends Controller
         return response()->json($books, 200);
     }
 
+    
     public function showAllBooksFromAuthor($author_id)
     {
-        $author = Author::find($author_id);
-        $books = $author->books;
+        try {
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
+            $books = $author->books;
 
-        return response()->json($books, 200);
+            return response()->json($books, 200);
+
     }
+     
 
     public function showOneBook($author_id, $book_id)
     {
-        $author = Author::find($author_id);
+        try{
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
         $book = $author->books
                        ->where('id', '=', $book_id)
                        ->first();
@@ -78,7 +101,11 @@ class AuthorController extends Controller
     // CRUD Books
     public function createBook($author_id, Request $request)
     {
-        $author = Author::find($author_id);
+        try{
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
         $book = Book::create([
             'title' => $request->title,
             'author_id' => $author->id
@@ -89,18 +116,30 @@ class AuthorController extends Controller
     
     public function updateBook($author_id, $book_id, Request $request)
     {
-        $author = Author::find($author_id);
+        try{
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
         $book = $author->books
                        ->where('id', '=', $book_id)
                        ->first()
                        ->update($request->all());
 
-        return response()->json($book, 200);
+        $updatedBook = $author->books
+                              ->where('id', '=', $book_id)
+                              ->first();
+
+        return response()->json($updatedBook, 200);
     }
 
     public function deleteBook($author_id, $book_id)
     {
-        $author = Author::find($author_id);
+        try{
+            $author = Author::findOrFail($author_id);
+        } catch(ModelNotFoundException $e) {
+            return response('Author not found', 404);
+        }
         $book = $author->books
                        ->where('id', '=', $book_id)
                        ->first()
